@@ -8,6 +8,7 @@ Features
 - Shuffle and play all mode used for batting practice or pre game time
 - Search ability for Songs and Sound Clips
 - Walk-up songs list
+- Runs on Windows 10
 
-![Cluster with LCD Display](ScreenCapture.png)
+![Ballpark Audio Dashboard](ScreenCapture.png, "Screen capture of the Windows Application")
 
