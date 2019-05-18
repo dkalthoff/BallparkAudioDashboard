@@ -10,5 +10,5 @@ Features
 - Walk-up songs list
 - Runs on Windows 10
 
-![Ballpark Audio Dashboard](ScreenCapture.PNG, "Screen capture of the Windows Application")
+![Ballpark Audio Dashboard](ScreenCapture.PNG "Screen capture of the Windows Application")
 
