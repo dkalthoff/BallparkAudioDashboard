@@ -62,11 +62,8 @@
             <Label x:Name="SongCountUpLabel" Content="0:00" Canvas.Left="10" Canvas.Top="27"/>
             <Label x:Name="SongCountDownLabel" Content="0:00" Canvas.Left="294" Canvas.Top="25"/>
             <Slider x:Name="SongSlider" Canvas.Left="47" Canvas.Top="31" Width="242" Thumb.DragStarted="SongSlider_DragStarted" Thumb.DragCompleted="SongSlider_DragCompleted" ValueChanged="SongSlider_ValueChanged" IsMoveToPointEnabled="True" MouseLeftButtonUp="SongSlider_MouseLeftButtonUp"/>
-            <Button x:Name="PlayButton" Content="Play" Canvas.Left="80" Canvas.Top="62" Width="47" FontSize="14" Height="34" ToolTip="Play" Click="PlayButton_Click"/>
-            <Button x:Name="PauseButton" Content="Pause" Canvas.Left="132" Canvas.Top="62" Width="55" Height="34" FontSize="14" ToolTip="Pause" Click="PauseButton_Click"/>
-            <Button x:Name="StopButton" Content="Stop" Canvas.Left="192" Canvas.Top="62" Width="46" Height="34" FontSize="14" RenderTransformOrigin="0.535,0.5" ToolTip="Stop" Click="StopButton_Click"/>
-            <Button x:Name="FadeOutButton" Content="Fade Out" Canvas.Left="243" Canvas.Top="62" Width="91" Height="34" FontWeight="Bold" ToolTip="Fade Song Out" Click="FadeOutButton_Click"/>
-            <Button x:Name="FadeInButton" Content="Fade In" Canvas.Top="62" Width="75" Height="34" Click="FadeInButton_Click" FontWeight="Bold"/>
+            <Button x:Name="FadeOutButton" Content="Stop - Fade Out" Canvas.Left="176" Canvas.Top="62" Width="160" Height="34" FontWeight="Bold" ToolTip="Fade Song Out" Click="FadeOutButton_Click" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.661,0.548"/>
+            <Button x:Name="FadeInButton" Content="Play - Fade In" Canvas.Top="62" Width="160" Height="34" Click="FadeInButton_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             <TabControl Height="577" Canvas.Top="117" Width="334">
                 <TabItem Header="Queue">
                     <Grid>
