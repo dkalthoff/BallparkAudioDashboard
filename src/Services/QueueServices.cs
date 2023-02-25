@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 
 namespace BallparkAudioDashboard.Services
@@ -52,21 +51,10 @@ namespace BallparkAudioDashboard.Services
         {
             IEnumerable<Song> songs;
 
-            try
+            using (FileStream fs = File.Open(Path.Combine(GetFolderPath(), name), FileMode.Open))
             {
-                using (FileStream fs = File.Open(Path.Combine(GetFolderPath(), name), FileMode.Open))
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    songs = formatter.Deserialize(fs) as List<Song>;
-                }
-            }
-            catch (Exception)
-            {
-                using (FileStream fs = File.Open(Path.Combine(GetFolderPath(), name), FileMode.Open))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(List<Song>));
-                    songs = serializer.Deserialize(fs) as List<Song>;
-                }
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Song>));
+                songs = serializer.Deserialize(fs) as List<Song>;
             }
 
             return new ObservableCollection<Song>(songs);
