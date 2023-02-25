@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BallparkAudioDashboard.Services
 {
@@ -46,7 +44,7 @@ namespace BallparkAudioDashboard.Services
                 {
                     Title = file.Name.Replace(file.Extension, string.Empty),
                     FullPath = file.FullName
-                });
+                }).OrderBy(s => s.Title);
             }
 
             return new List<Song>();

@@ -59,6 +59,8 @@ namespace BallparkAudioDashboard
 
             _fadeOutTimer.Interval = TimeSpan.FromSeconds(4);
             _fadeOutTimer.Tick += _fadeOutTimer_Tick;
+
+            PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -161,7 +163,7 @@ namespace BallparkAudioDashboard
 
         private void ClearAllQueueButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure you want to clear the Queue?", "Clear Queue", MessageBoxButton.YesNo);
+            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure you want to clear the Playlist?", "Clear Playlist", MessageBoxButton.YesNo);
             if (messageBoxResult == MessageBoxResult.Yes)
             {
                 QueueSongsListView.ItemsSource = new ObservableCollection<Song>();
@@ -187,7 +189,7 @@ namespace BallparkAudioDashboard
 
         private void SaveQueueButton_Click(object sender, RoutedEventArgs e)
         {
-            string queueName = Microsoft.VisualBasic.Interaction.InputBox("Save..", "Enter name of queue.", _loadedQueueName);
+            string queueName = Microsoft.VisualBasic.Interaction.InputBox("Save..", "Enter name of Playlist.", _loadedQueueName);
             if (!string.IsNullOrEmpty(queueName))
             {
                 _queueServices.Create(queueName, QueueSongsListView.Items.Cast<Song>());
@@ -199,7 +201,7 @@ namespace BallparkAudioDashboard
 
         private void SaveAsQueueButton_Click(object sender, RoutedEventArgs e)
         {
-            string queueName = Microsoft.VisualBasic.Interaction.InputBox("Save as..", "Enter name of queue.", _loadedQueueName);
+            string queueName = Microsoft.VisualBasic.Interaction.InputBox("Save as..", "Enter name of Playlist.", _loadedQueueName);
             if (!string.IsNullOrEmpty(queueName))
             {
                 _queueServices.Create(queueName, QueueSongsListView.Items.Cast<Song>());

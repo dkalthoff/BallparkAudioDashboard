@@ -6,8 +6,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace BallparkAudioDashboard.Services
 {
@@ -30,12 +29,11 @@ namespace BallparkAudioDashboard.Services
                 Directory.CreateDirectory(folderPath);
             }
 
-            Stream stream = File.OpenWrite(Path.Combine(folderPath, name));
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(stream, songs.ToList());
-            stream.Flush();
-            stream.Close();
-            stream.Dispose();
+            using (Stream stream = File.OpenWrite(Path.Combine(folderPath, name)))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Song>));
+                serializer.Serialize(stream, songs.ToList());
+            }
         }
 
         public IEnumerable<string> Get()
@@ -52,13 +50,25 @@ namespace BallparkAudioDashboard.Services
 
         public ObservableCollection<Song> Get(string name)
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            FileStream fs = File.Open(Path.Combine(GetFolderPath(), name), FileMode.Open);
+            IEnumerable<Song> songs;
 
-            IEnumerable<Song> songs = formatter.Deserialize(fs) as List<Song>;
-            fs.Flush();
-            fs.Close();
-            fs.Dispose(); 
+            try
+            {
+                using (FileStream fs = File.Open(Path.Combine(GetFolderPath(), name), FileMode.Open))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    songs = formatter.Deserialize(fs) as List<Song>;
+                }
+            }
+            catch (Exception)
+            {
+                using (FileStream fs = File.Open(Path.Combine(GetFolderPath(), name), FileMode.Open))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<Song>));
+                    songs = serializer.Deserialize(fs) as List<Song>;
+                }
+            }
+
             return new ObservableCollection<Song>(songs);
         }
     }
