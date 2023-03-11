@@ -1,4 +1,5 @@
 ﻿using BallparkAudioDashboard.DataContracts;
+using BallparkAudioDashboard.Helpers;
 using BallparkAudioDashboard.Services;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using WPF.JoshSmith.ServiceProviders.UI;
 
 namespace BallparkAudioDashboard
 {
@@ -27,13 +29,16 @@ namespace BallparkAudioDashboard
         private string _loadedQueueName = string.Empty;
         private ObservableCollection<Song> _fullLengthSongs = null;
         private IEnumerable<Song> _soundClips = null;
-        private bool _userIsDraggingSlider = false;
+        private bool _userIsDraggingSongSlider = false;
+        private bool _userIsDraggingSong2Slider = false;
         private static readonly Random randomSongShuffler = new Random();
         private bool _playAllFullLengthSongs = false;
         private bool _playAllQueuedSongs = false;
         private readonly DispatcherTimer _fadeOutTimer = new DispatcherTimer();
+        private readonly DispatcherTimer _fadeOutTimer2 = new DispatcherTimer();
 
         private const string SONG_SEARCH_TEXTBOX_DEFAULT_TEXT = "Search...";
+        private static readonly string DEFAULT_QUEUED_FILE_NAME = ConfigurationManager.AppSettings.Get("SavedQueuesDefaultFileName");
 
         public MainWindow()
         {
@@ -42,6 +47,10 @@ namespace BallparkAudioDashboard
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
+            PlayerMediaElement2.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement2.Volume, 1, TimeSpan.FromSeconds(1)));
+            MasterVolumeSlider.Value = AudioManager.GetMasterVolume();
+
             _audioFilesServices = new AudioFilesServices();
             _queueServices = new QueueServices();
 
@@ -60,18 +69,38 @@ namespace BallparkAudioDashboard
             _fadeOutTimer.Interval = TimeSpan.FromSeconds(4);
             _fadeOutTimer.Tick += _fadeOutTimer_Tick;
 
-            PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
+            _fadeOutTimer2.Interval = TimeSpan.FromSeconds(4);
+            _fadeOutTimer2.Tick += _fadeOutTimer2_Tick;
+
+            new ListViewDragDropManager<Song>(QueueSongsListView);
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if ((PlayerMediaElement.Source != null) && (PlayerMediaElement.NaturalDuration.HasTimeSpan) && (!_userIsDraggingSlider))
+            if ((PlayerMediaElement.Source != null) && (PlayerMediaElement.NaturalDuration.HasTimeSpan) && (!_userIsDraggingSongSlider))
             {
                 SongSlider.Minimum = 0;
                 SongSlider.Maximum = PlayerMediaElement.NaturalDuration.TimeSpan.TotalSeconds;
                 SongSlider.Value = PlayerMediaElement.Position.TotalSeconds;
                 SongCountDownLabel.Content = PlayerMediaElement.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
             }
+
+            if ((PlayerMediaElement2.Source != null) && (PlayerMediaElement2.NaturalDuration.HasTimeSpan) && (!_userIsDraggingSong2Slider))
+            {
+                Song2Slider.Minimum = 0;
+                Song2Slider.Maximum = PlayerMediaElement2.NaturalDuration.TimeSpan.TotalSeconds;
+                Song2Slider.Value = PlayerMediaElement2.Position.TotalSeconds;
+                Song2CountDownLabel.Content = PlayerMediaElement2.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
+            }
+
+            // Check volume (might change level using the keyboard)
+            if (MasterVolumeSlider.Value != AudioManager.GetMasterVolume())
+            {
+                MasterVolumeSlider.Value = AudioManager.GetMasterVolume();
+                MasterVolumeLevelLabel.Content = string.Format("{0}%", Math.Round(MasterVolumeSlider.Value));
+            }
+
+            MuteButton.Content = AudioManager.GetMasterVolumeMute() ? "Unmute" : "Mute";
         }
 
         private void FullSongsListView_Loaded(object sender, RoutedEventArgs e)
@@ -232,14 +261,19 @@ namespace BallparkAudioDashboard
 
         private void SavedQueuesComboBox_Loaded(object sender, RoutedEventArgs e)
         {
+            IEnumerable<string> savedQueues = _queueServices.Get().OrderBy(q => q);
             SavedQueuesComboBox.ItemsSource = null;
-            SavedQueuesComboBox.ItemsSource = _queueServices.Get();
+            SavedQueuesComboBox.ItemsSource = savedQueues;
+            if (savedQueues.Contains(DEFAULT_QUEUED_FILE_NAME))
+            {
+                SavedQueuesComboBox.SelectedItem = savedQueues.First(q => q == DEFAULT_QUEUED_FILE_NAME);
+            }
         }
 
         private void FadeInButton_Click(object sender, RoutedEventArgs e)
         {
             PlayerMediaElement.Volume = 0;
-            PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(4)));
+            PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(5)));
             PlayerMediaElement.Play();
 
         }
@@ -250,6 +284,20 @@ namespace BallparkAudioDashboard
             PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 0, TimeSpan.FromSeconds(3)));
         }
 
+        private void FadeIn2Button_Click(object sender, RoutedEventArgs e)
+        {
+            PlayerMediaElement2.Volume = 0;
+            PlayerMediaElement2.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement2.Volume, 1, TimeSpan.FromSeconds(5)));
+            PlayerMediaElement2.Play();
+
+        }
+
+        private void FadeOut2Button_Click(object sender, RoutedEventArgs e)
+        {
+            _fadeOutTimer2.Start();
+            PlayerMediaElement2.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement2.Volume, 0, TimeSpan.FromSeconds(3)));
+        }
+
         private void _fadeOutTimer_Tick(object sender, EventArgs e)
         {
             _fadeOutTimer.Stop();
@@ -258,6 +306,13 @@ namespace BallparkAudioDashboard
 
             _playAllFullLengthSongs = false;
             _playAllQueuedSongs = false;
+        }
+
+        private void _fadeOutTimer2_Tick(object sender, EventArgs e)
+        {
+            _fadeOutTimer2.Stop();
+            PlayerMediaElement2.Pause();
+            PlayerMediaElement2.Volume = 1;
         }
 
         private void SongsSearchTextBox_KeyUp(object sender, KeyEventArgs e)
@@ -298,18 +353,34 @@ namespace BallparkAudioDashboard
 
         private void SongSlider_DragStarted(object sender, DragStartedEventArgs e)
         {
-            _userIsDraggingSlider = true;
+            _userIsDraggingSongSlider = true;
         }
 
         private void SongSlider_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            _userIsDraggingSlider = false;
+            _userIsDraggingSongSlider = false;
             PlayerMediaElement.Position = TimeSpan.FromSeconds(SongSlider.Value);
         }
 
         private void SongSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SongCountUpLabel.Content = TimeSpan.FromSeconds(SongSlider.Value).ToString(@"mm\:ss");
+        }
+
+        private void Song2Slider_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            _userIsDraggingSong2Slider = true;
+        }
+
+        private void Song2Slider_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            _userIsDraggingSong2Slider = false;
+            PlayerMediaElement2.Position = TimeSpan.FromSeconds(Song2Slider.Value);
+        }
+
+        private void Song2Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Song2CountUpLabel.Content = TimeSpan.FromSeconds(Song2Slider.Value).ToString(@"mm\:ss");
         }
 
         private void SoundClipsSearchTextBox_KeyUp(object sender, KeyEventArgs e)
@@ -382,6 +453,8 @@ namespace BallparkAudioDashboard
 
         private void FullLengthSongsShuffleAndPlayButton_Click(object sender, RoutedEventArgs e)
         {
+            PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
+
             SongsSearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
             _fullLengthSongs = new ObservableCollection<Song>(_audioFilesServices.GetFullLengthSongs());
             ShuffleSongs(_fullLengthSongs);
@@ -418,8 +491,7 @@ namespace BallparkAudioDashboard
                 nextSong = _fullLengthSongs[nextSongIndex];
                 FullSongsListView.SelectedIndex = nextSongIndex;
             }
-
-            if (_playAllQueuedSongs && QueueSongsListView.HasItems)
+            else if (_playAllQueuedSongs && QueueSongsListView.HasItems)
             {
                 List<Song> queuedSongs = QueueSongsListView.Items.Cast<Song>().ToList();
                 int nextSongIndex = 0;
@@ -439,6 +511,10 @@ namespace BallparkAudioDashboard
                 nextSong = queuedSongs[nextSongIndex];
                 QueueSongsListView.SelectedIndex = nextSongIndex;
             }
+            else
+            {
+                PlayerMediaElement.Stop();
+            }
 
             if (nextSong != null)
             {
@@ -447,15 +523,31 @@ namespace BallparkAudioDashboard
             }
         }
 
+        private void PlayerMediaElement2_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            PlayerMediaElement2.Stop();
+        }
+
         private void PlayerMediaElement_MediaOpened(object sender, RoutedEventArgs e)
         {
             FileInfo songFileInfo = new FileInfo(PlayerMediaElement.Source.OriginalString);
             SongTitleLabel.Content = songFileInfo.Name.Replace(songFileInfo.Extension, string.Empty);
         }
 
+        private void PlayerMediaElement2_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            FileInfo songFileInfo = new FileInfo(PlayerMediaElement2.Source.OriginalString);
+            Song2TitleLabel.Content = songFileInfo.Name.Replace(songFileInfo.Extension, string.Empty);
+        }
+
         private void SongSlider_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             PlayerMediaElement.Position = TimeSpan.FromSeconds(SongSlider.Value);
+        }
+
+        private void Song2Slider_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            PlayerMediaElement2.Position = TimeSpan.FromSeconds(Song2Slider.Value);
         }
 
         private void LoadInPlayerMediaElement(ListView listView)
@@ -467,6 +559,17 @@ namespace BallparkAudioDashboard
             PlayerMediaElement.Play();
             PlayerMediaElement.Pause();
             PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 0, TimeSpan.FromSeconds(1)));
+        }
+
+        private void LoadInPlayerMediaElement2(ListView listView)
+        {
+            if (listView.SelectedIndex == -1) return;
+
+            Song song = listView.SelectedItem as Song;
+            PlayerMediaElement2.Source = new Uri(song.FullPath);
+            PlayerMediaElement2.Play();
+            PlayerMediaElement2.Pause();
+            PlayerMediaElement2.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 0, TimeSpan.FromSeconds(1)));
         }
 
         private void FullSongsListView_LoadInPlayer(object sender, RoutedEventArgs e)
@@ -489,10 +592,32 @@ namespace BallparkAudioDashboard
             LoadInPlayerMediaElement(OrganSongsListView);
         }
 
+        private void FullSongsListView_LoadInPlayer2(object sender, RoutedEventArgs e)
+        {
+            LoadInPlayerMediaElement2(FullSongsListView);
+        }
+
+        private void QueueSongsListView_LoadInPlayer2(object sender, RoutedEventArgs e)
+        {
+            LoadInPlayerMediaElement2(QueueSongsListView);
+        }
+
+        private void TraditionSongsListView_LoadInPlayer2(object sender, RoutedEventArgs e)
+        {
+            LoadInPlayerMediaElement2(TraditionSongsListView);
+        }
+
+        private void OrganSongsListView_LoadInPlayer2(object sender, RoutedEventArgs e)
+        {
+            LoadInPlayerMediaElement2(OrganSongsListView);
+        }
+
         private void QueueSongsListViewPlayAll_Click(object sender, RoutedEventArgs e)
         {
             if (QueueSongsListView.HasItems)
             {
+                PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
+
                 PlayerMediaElement.Source = new Uri(QueueSongsListView.Items.Cast<Song>().First().FullPath);
                 PlayerMediaElement.Play();
                 QueueSongsListView.SelectedIndex = 0;
@@ -506,6 +631,8 @@ namespace BallparkAudioDashboard
         {
             if (QueueSongsListView.HasItems)
             {
+                PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
+
                 ObservableCollection<Song> queueSongsList = new ObservableCollection<Song>(QueueSongsListView.ItemsSource.Cast<Song>());
                 ShuffleSongs(queueSongsList);
                 QueueSongsListView.ItemsSource = queueSongsList;
@@ -537,6 +664,28 @@ namespace BallparkAudioDashboard
         private void SoundClipListView_AddToQueue(object sender, RoutedEventArgs e)
         {
             AddSongToQueue(SoundClipListView);
+        }
+
+        private void SoundClipListView_LoadInPlayer(object sender, RoutedEventArgs e)
+        {
+            LoadInPlayerMediaElement(SoundClipListView);
+        }
+
+        private void SoundClipListView_LoadInPlayer2(object sender, RoutedEventArgs e)
+        {
+            LoadInPlayerMediaElement2(SoundClipListView);
+        }
+
+        private void MasterVolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            AudioManager.SetMasterVolume((float)MasterVolumeSlider.Value);
+            MasterVolumeLevelLabel.Content = string.Format("{0}%", Math.Round(MasterVolumeSlider.Value));
+        }
+
+        private void MuteButton_Click(object sender, RoutedEventArgs e)
+        {
+            AudioManager.ToggleMasterVolumeMute();
+            MuteButton.Content = AudioManager.GetMasterVolumeMute() ? "Unmute" : "Mute";
         }
 
         #region PA Tab
@@ -641,7 +790,11 @@ namespace BallparkAudioDashboard
         private void WalkUpSongsListView_LoadInPlayer(object sender, RoutedEventArgs e)
         {
             LoadInPlayerMediaElement(WalkUpSongsListView);
+        }
 
+        private void WalkUpSongsListView_LoadInPlayer2(object sender, RoutedEventArgs e)
+        {
+            LoadInPlayerMediaElement2(WalkUpSongsListView);
         }
     }
 }

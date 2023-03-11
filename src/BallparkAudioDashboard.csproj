@@ -60,6 +60,7 @@
     <Compile Include="DataContracts\Player.cs" />
     <Compile Include="DataContracts\Position.cs" />
     <Compile Include="DataContracts\Song.cs" />
+    <Compile Include="Helpers\AudioManager.cs" />
     <Compile Include="Helpers\DragAdorner.cs" />
     <Compile Include="Helpers\ListViewDragDropManager.cs" />
     <Compile Include="Helpers\MouseUtilities.cs" />

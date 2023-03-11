@@ -1,10 +1,10 @@
 ﻿<Window x:Class="BallparkAudioDashboard.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Ballpark Audio Dashboard" WindowState="Maximized" Height="895.78" Width="1034" Loaded="Window_Loaded">
-    <UniformGrid Columns="3" Rows="1">
-        <Canvas Margin="2">
-            <ListView Name="TraditionSongsListView" Loaded="TraditionSongsListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick" Height="130" Width="318" Canvas.Left="10" Canvas.Top="31">
+        Title="Ballpark Audio Dashboard" WindowState="Maximized" Height="1080" Width="1920" Loaded="Window_Loaded">
+    <DockPanel>
+        <Canvas Width="370">
+            <ListView Name="TraditionSongsListView" Loaded="TraditionSongsListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick" Height="130" Width="356" Canvas.Left="10" Canvas.Top="31">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
@@ -15,11 +15,12 @@
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Add to Playlist" Click="TraditionSongsListView_AddToQueue"/>
-                        <MenuItem Header="Load In Player" Click="TraditionSongsListView_LoadInPlayer"/>
+                        <MenuItem Header="Load In Player One" Click="TraditionSongsListView_LoadInPlayer"/>
+                        <MenuItem Header="Load In Player Two" Click="TraditionSongsListView_LoadInPlayer2"/>
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
-            <ListView Name="OrganSongsListView" Loaded="OrganSongsListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick" Height="160" Width="318" Canvas.Left="10" Canvas.Top="195">
+            <ListView Name="OrganSongsListView" Loaded="OrganSongsListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick" Height="592" Width="356" Canvas.Left="10" Canvas.Top="195" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
@@ -30,15 +31,18 @@
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Add to Playlist" Click="OrganSongsListView_AddToQueue"/>
-                        <MenuItem Header="Load In Player" Click="OrganSongsListView_LoadInPlayer"/>
+                        <MenuItem Header="Load In Player One" Click="OrganSongsListView_LoadInPlayer"/>
+                        <MenuItem Header="Load In Player Two" Click="OrganSongsListView_LoadInPlayer2"/>
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
             <Label Content="Traditional Songs" Canvas.Left="10" Canvas.Top="5" FontWeight="Bold"/>
             <Label Content="Full Organ and Misc Songs" Canvas.Left="10" Canvas.Top="168" FontWeight="Bold"/>
-            <Button x:Name="TraditionSongsAddToQueueButton" Content="Add to Playlist" Canvas.Left="246" Canvas.Top="5" Width="82" Height="21" Click="TraditionSongsAddToQueueButton_Click" ToolTip="Add To Playlist" FontSize="10" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <Button x:Name="OrganSongsAddToQueueButton_Copy" Content="Add to Playlist" Canvas.Left="246" Canvas.Top="169" Width="82" FontWeight="Bold" Height="21" Click="OrganSongsAddToQueueButton_Copy_Click" ToolTip="Add To Playlist" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <ListView x:Name="SoundClipListView" Height="307" Canvas.Left="10" Canvas.Top="392" Width="318" Loaded="SoundClipListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick">
+            <Button x:Name="TraditionSongsAddToQueueButton" Content="Add to Playlist" Canvas.Left="284" Canvas.Top="6" Width="82" Height="21" Click="TraditionSongsAddToQueueButton_Click" ToolTip="Add To Playlist" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Button x:Name="OrganSongsAddToQueueButton_Copy" Content="Add to Playlist" Canvas.Left="282" Canvas.Top="170" Width="82" Height="21" Click="OrganSongsAddToQueueButton_Copy_Click" ToolTip="Add To Playlist" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Canvas>
+        <Canvas Width="370">
+            <ListView x:Name="SoundClipListView" Height="756" Canvas.Left="10" Canvas.Top="31" Width="356" Loaded="SoundClipListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
@@ -49,25 +53,51 @@
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Add to Playlist" Click="SoundClipListView_AddToQueue"/>
+                        <MenuItem Header="Load In Player One" Click="SoundClipListView_LoadInPlayer"/>
+                        <MenuItem Header="Load In Player Two" Click="SoundClipListView_LoadInPlayer2"/>
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
-            <Label x:Name="SoundClipsLabel" Content="Sound Clips" Canvas.Left="10" Canvas.Top="366" FontWeight="Bold"/>
-            <Button x:Name="SoundClipsAddToQueueButton" Content="Add to Playlist" Canvas.Left="246" Canvas.Top="367" Width="82" Click="SoundClipsAddToQueueButton_Click" ToolTip="Add To Playlist" FontSize="10" Height="20" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBox x:Name="SoundClipsSearchTextBox" Height="23" Canvas.Left="93" TextWrapping="Wrap" Text="TextBox" Canvas.Top="366" Width="120" KeyUp="SoundClipsSearchTextBox_KeyUp" GotFocus="SoundClipsSearchTextBox_GotFocus" LostFocus="SoundClipsSearchTextBox_LostFocus"/>
-            <Button x:Name="SoundClipsSearchClearButton" Content="X" Canvas.Left="213" Canvas.Top="366" Width="29" Click="SoundClipsSearchClearButton_Click" Height="23"/>
+            <Label x:Name="SoundClipsLabel" Content="Sound Clips" Canvas.Left="10" Canvas.Top="6" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Button x:Name="SoundClipsAddToQueueButton" Content="Add to Playlist" Canvas.Left="282" Canvas.Top="6" Width="82" Click="SoundClipsAddToQueueButton_Click" ToolTip="Add To Playlist" FontSize="10" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox x:Name="SoundClipsSearchTextBox" Height="23" Canvas.Left="85" TextWrapping="Wrap" Text="Search..." Canvas.Top="6" Width="142" KeyUp="SoundClipsSearchTextBox_KeyUp" GotFocus="SoundClipsSearchTextBox_GotFocus" LostFocus="SoundClipsSearchTextBox_LostFocus" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Button x:Name="SoundClipsSearchClearButton" Content="X" Canvas.Left="227" Canvas.Top="6" Width="29" Click="SoundClipsSearchClearButton_Click" Height="23" RenderTransformOrigin="0.655,-8.363" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         </Canvas>
-        <Canvas Margin="3">
-            <Label x:Name="SongTitleLabel" Content="Double Click A Song To Play" FontWeight="Bold" Width="336"/>
-            <Label x:Name="SongCountUpLabel" Content="0:00" Canvas.Left="10" Canvas.Top="27"/>
-            <Label x:Name="SongCountDownLabel" Content="0:00" Canvas.Left="294" Canvas.Top="25"/>
-            <Slider x:Name="SongSlider" Canvas.Left="47" Canvas.Top="31" Width="242" Thumb.DragStarted="SongSlider_DragStarted" Thumb.DragCompleted="SongSlider_DragCompleted" ValueChanged="SongSlider_ValueChanged" IsMoveToPointEnabled="True" MouseLeftButtonUp="SongSlider_MouseLeftButtonUp"/>
-            <Button x:Name="FadeOutButton" Content="Stop - Fade Out" Canvas.Left="176" Canvas.Top="62" Width="160" Height="34" FontWeight="Bold" ToolTip="Fade Song Out" Click="FadeOutButton_Click" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.661,0.548"/>
-            <Button x:Name="FadeInButton" Content="Play - Fade In" Canvas.Top="62" Width="160" Height="34" Click="FadeInButton_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TabControl Height="577" Canvas.Top="117" Width="334">
+        <Canvas Width="360">
+            <Canvas Width="360">
+                <MediaElement x:Name="PlayerMediaElement" Visibility="Hidden" LoadedBehavior="Manual" Volume="1" MediaEnded="PlayerMediaElement_MediaEnded" MediaOpened="PlayerMediaElement_MediaOpened"/>
+                <Rectangle Panel.ZIndex="0" Fill="LightGray" Canvas.Left="5" Canvas.Top="5" Width="355" Height="85" />
+                <TextBlock Text="One" FontWeight="Bold" FontSize="15" Canvas.Left="3" Canvas.Top="38" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+                <Label x:Name="SongTitleLabel" Content="Double Click A Song To Play" FontWeight="Bold" Width="Auto" Canvas.Left="3"/>
+                <Label x:Name="SongCountUpLabel" Content="0:00" Canvas.Left="18" Canvas.Top="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Slider x:Name="SongSlider" Canvas.Left="50" Canvas.Top="25" Width="270" Thumb.DragStarted="SongSlider_DragStarted" Thumb.DragCompleted="SongSlider_DragCompleted" ValueChanged="SongSlider_ValueChanged" IsMoveToPointEnabled="True" MouseLeftButtonUp="SongSlider_MouseLeftButtonUp" HorizontalAlignment="Center" Height="22" VerticalAlignment="Top"/>
+                <Label x:Name="SongCountDownLabel" Content="0:00" Canvas.Left="320" Canvas.Top="20"/>
+                <Button x:Name="FadeInButton" Content="Play - Fade In" Canvas.Top="48" Canvas.Left="25" Width="160" Height="34" Click="FadeInButton_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Button x:Name="FadeOutButton" Content="Stop - Fade Out" Canvas.Top="48" Canvas.Left="190" Width="160" Height="34" FontWeight="Bold" ToolTip="Fade Song Out" Click="FadeOutButton_Click" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.661,0.548"/>
+            </Canvas>
+            <Canvas Width="360" Canvas.Top="90">
+                <MediaElement x:Name="PlayerMediaElement2" Visibility="Hidden" LoadedBehavior="Manual" Volume="1" MediaEnded="PlayerMediaElement2_MediaEnded" MediaOpened="PlayerMediaElement2_MediaOpened"/>
+                <Rectangle Panel.ZIndex="0" Fill="LightGray" Canvas.Left="5" Canvas.Top="5" Width="355" Height="85" />
+                <TextBlock Text="Two" FontWeight="Bold" FontSize="15" Canvas.Left="3" Canvas.Top="38" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+                <Label x:Name="Song2TitleLabel" Content="Add by right-clicking on song" FontWeight="Bold" Width="Auto" Canvas.Left="3"/>
+                <Label x:Name="Song2CountUpLabel" Content="0:00" Canvas.Left="18" Canvas.Top="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Slider x:Name="Song2Slider" Canvas.Left="50" Canvas.Top="24" Width="270" Thumb.DragStarted="Song2Slider_DragStarted" Thumb.DragCompleted="Song2Slider_DragCompleted" ValueChanged="Song2Slider_ValueChanged" IsMoveToPointEnabled="True" MouseLeftButtonUp="Song2Slider_MouseLeftButtonUp" HorizontalAlignment="Center" Height="25" VerticalAlignment="Top"/>
+                <Label x:Name="Song2CountDownLabel" Content="0:00" Canvas.Left="320" Canvas.Top="20"/>
+                <Button x:Name="FadeIn2Button" Content="Play - Fade In" Canvas.Top="48" Canvas.Left="25" Width="160" Height="34" Click="FadeIn2Button_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Button x:Name="FadeOut2Button" Content="Stop - Fade Out" Canvas.Top="48" Canvas.Left="190" Width="160" Height="34" FontWeight="Bold" ToolTip="Fade Song Out" Click="FadeOut2Button_Click" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.661,0.548"/>
+            </Canvas>
+            <TabControl Height="601" Canvas.Top="185" Canvas.Left="10" Width="345" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TabItem Header="Playlists">
                     <Grid>
-                        <ListView x:Name="QueueSongsListView" MouseDoubleClick="ListView_MouseDoubleClick" Margin="0,76,2,75">
+                        <ListView x:Name="QueueSongsListView" MouseDoubleClick="ListView_MouseDoubleClick" Margin="0,76,2,70">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <WrapPanel>
@@ -77,20 +107,21 @@
                             </ListView.ItemTemplate>
                             <ListView.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Load In Player" Click="QueueSongsListView_LoadInPlayer"/>
+                                    <MenuItem Header="Load In Player One" Click="QueueSongsListView_LoadInPlayer"/>
+                                    <MenuItem Header="Load In Player Two" Click="QueueSongsListView_LoadInPlayer2"/>
                                 </ContextMenu>
                             </ListView.ContextMenu>
                         </ListView>
-                        <ComboBox x:Name="SavedQueuesComboBox" ToolTip="Load a saved playlist" SelectionChanged="SavedQueuesComboBox_SelectionChanged" Loaded="SavedQueuesComboBox_Loaded" Margin="110,9,79,518"/>
-                        <Button x:Name="SaveQueueButton" Content="Save Playlist" ToolTip="Save what's currently in Playlist" Click="SaveQueueButton_Click" Margin="254,10,5,519"/>
-                        <Button x:Name="ClearAllQueueButton" Content="All" Click="ClearAllQueueButton_Click" RenderTransformOrigin="0.549,0.6" Margin="199,51,87,478"/>
-                        <Button x:Name="ClearSelectedQueueButton" Content="Selected" Click="ClearSelectedQueueButton_Click" Margin="124,51,134,478"/>
-                        <Label Content="--- Remove ---" FontWeight="Bold" Margin="141,31,96,492"/>
-                        <Label Content="Load Saved Playlist" Margin="2,9,217,514"/>
-                        <Button x:Name="QueueSongsListViewPlayAll" Content="Play All" Click="QueueSongsListViewPlayAll_Click" Margin="7,479,5,40"/>
-                        <Button x:Name="SaveAsQueue" Content="Save As" HorizontalAlignment="Left" Margin="254,35,0,0" VerticalAlignment="Top" Width="69" Height="21" ToolTip="Save as a new Playlist what's currently in Playlist" Click="SaveAsQueueButton_Click"/>
+                        <ComboBox x:Name="SavedQueuesComboBox" ToolTip="Load a saved playlist" SelectionChanged="SavedQueuesComboBox_SelectionChanged" Loaded="SavedQueuesComboBox_Loaded" Margin="84,6,96,546"/>
+                        <Button x:Name="SaveQueueButton" Content="Save Playlist" ToolTip="Save what's currently in Playlist" Click="SaveQueueButton_Click" Margin="248,5,6,545"/>
+                        <Button x:Name="ClearAllQueueButton" Content="All" Click="ClearAllQueueButton_Click" RenderTransformOrigin="0.549,0.6" Margin="188,51,98,503"/>
+                        <Button x:Name="ClearSelectedQueueButton" Content="Selected" Click="ClearSelectedQueueButton_Click" Margin="104,51,154,502"/>
+                        <Label Content="--- Remove ---" FontWeight="Bold" Margin="134,30,103,515"/>
+                        <Label Content="Load Playlist" Margin="2,3,217,542"/>
+                        <Button x:Name="SaveAsQueue" Content="Save As" HorizontalAlignment="Left" Margin="250,33,0,0" VerticalAlignment="Top" Width="82" Height="21" ToolTip="Save as a new Playlist what's currently in Playlist" Click="SaveAsQueueButton_Click"/>
                         <Button x:Name="UnloadSavedQueue" Content="Unload" HorizontalAlignment="Left" Margin="10,51,0,0" VerticalAlignment="Top" Width="75" ToolTip="Unload a saved Playlist" IsEnabled="False" Click="UnloadSavedQueue_Click"/>
-                        <Button x:Name="QueueSongsListViewShuffleAndPlayAll" Content="Shuffle and Play All" HorizontalAlignment="Left" Margin="7,514,0,0" VerticalAlignment="Top" Width="316" Height="28" Click="QueueSongsListViewShuffleAndPlayAll_Click" ToolTip="Shuffle all songs loaded in the Playlist and play them all"/>
+                        <Button x:Name="QueueSongsListViewPlayAll" Content="Play All" Height="28" Click="QueueSongsListViewPlayAll_Click" Margin="3,508,4,37" />
+                        <Button x:Name="QueueSongsListViewShuffleAndPlayAll" Content="Shuffle and Play All" Height="28" Click="QueueSongsListViewShuffleAndPlayAll_Click" ToolTip="Shuffle all songs loaded in the Playlist and play them all" Margin="4,541,4,4"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Walkup Songs">
@@ -110,7 +141,8 @@
                             </ListView.ItemTemplate>
                             <ListView.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Load In Player" Click="WalkUpSongsListView_LoadInPlayer"/>
+                                    <MenuItem Header="Load In Player One" Click="WalkUpSongsListView_LoadInPlayer"/>
+                                    <MenuItem Header="Load In Player Two" Click="WalkUpSongsListView_LoadInPlayer2"/>
                                 </ContextMenu>
                             </ListView.ContextMenu>
                         </ListView>
@@ -129,8 +161,14 @@
                 </TabItem>
             </TabControl>
         </Canvas>
-        <Canvas Margin="3,0,3,133">
-            <ListView Name="FullSongsListView" Loaded="FullSongsListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick" Height="587" Width="336" Canvas.Top="29">
+        <Canvas Width="74">
+            <Label Content="Volume" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Width="64" HorizontalContentAlignment="Center"></Label>
+            <Slider Name="MasterVolumeSlider" Orientation="Vertical" Height="300" Width="29" Maximum="100" HorizontalAlignment="Left" TickFrequency="3" IsSnapToTickEnabled="True" TickPlacement="BottomRight" Canvas.Left="25" Canvas.Top="22" ValueChanged="MasterVolumeSlider_ValueChanged" VerticalAlignment="Center"></Slider>
+            <Button Name="MuteButton" Content="Mute" HorizontalAlignment="Left" Canvas.Top="329" VerticalAlignment="Top" Height="34" Width="64" Canvas.Left="1" Click="MuteButton_Click" FontWeight="Bold"></Button>
+            <Label Name="MasterVolumeLevelLabel" FontWeight="Bold" Content="100%" HorizontalAlignment="Center" Height="35" VerticalAlignment="Top" Canvas.Top="364" Canvas.Left="2" HorizontalContentAlignment="Center" Width="61" FontSize="20"></Label>
+        </Canvas>
+        <Canvas Width="360" HorizontalAlignment="Left">
+            <ListView x:Name="FullSongsListView" Loaded="FullSongsListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick" Height="679" Width="336" Canvas.Top="29" Canvas.Left="10" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
@@ -141,17 +179,17 @@
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Add to Playlist" Click="FullSongsListView_AddToQueue"/>
-                        <MenuItem Header="Load In Player" Click="FullSongsListView_LoadInPlayer"/>
+                        <MenuItem Header="Load In Player One" Click="FullSongsListView_LoadInPlayer"/>
+                        <MenuItem Header="Load In Player Two" Click="FullSongsListView_LoadInPlayer2"/>
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>
-            <MediaElement Name="PlayerMediaElement" Visibility="Hidden" LoadedBehavior="Manual" Volume="1" MediaEnded="PlayerMediaElement_MediaEnded" MediaOpened="PlayerMediaElement_MediaOpened"/>
-            <Label Content="Songs" Canvas.Top="5" FontWeight="Bold"/>
-            <Button x:Name="FullSongsAddToQueueButton" Content="Add to Playlist" Canvas.Left="254" Width="82" Height="21" Canvas.Top="4" Click="FullSongsAddToQueueButton_Click" ToolTip="Add To Playlist" FontSize="10" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBox x:Name="SongsSearchTextBox" Height="23" Canvas.Left="59" TextWrapping="Wrap" Width="148" Canvas.Top="3" ToolTip="Search for songs..." KeyUp="SongsSearchTextBox_KeyUp" Text="Search..." GotFocus="SongsSearchTextBox_GotFocus" LostFocus="SongsSearchTextBox_LostFocus"/>
-            <Button x:Name="SongsSearchClearButton" Content="X" Canvas.Left="207" Width="26" ToolTip="Clear Search" Click="SongsSearchClearButton_Click" Height="23" Canvas.Top="3"/>
-            <Button x:Name="FullLengthSongsShuffleAndPlayButton" Content="Shuffle and Play All" Canvas.Left="10" Canvas.Top="621" Width="316" Height="35" Click="FullLengthSongsShuffleAndPlayButton_Click"/>
-            <Button x:Name="FullLengthSongsSortButton" Content="Sort Songs by Name" Canvas.Left="10" Canvas.Top="661" Width="316" Height="33" Click="FullLengthSongsSortButton_Click"/>
+            <Label Content="Songs" Canvas.Top="5" FontWeight="Bold" HorizontalAlignment="Left" Canvas.Left="7" VerticalAlignment="Center"/>
+            <Button x:Name="FullSongsAddToQueueButton" Content="Add to Playlist" Canvas.Left="261" Width="82" Height="21" Canvas.Top="4" Click="FullSongsAddToQueueButton_Click" ToolTip="Add To Playlist" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox x:Name="SongsSearchTextBox" Height="23" Canvas.Left="54" TextWrapping="Wrap" Width="151" Canvas.Top="4" ToolTip="Search for songs..." KeyUp="SongsSearchTextBox_KeyUp" Text="Search..." GotFocus="SongsSearchTextBox_GotFocus" LostFocus="SongsSearchTextBox_LostFocus" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Button x:Name="SongsSearchClearButton" Content="X" Canvas.Left="206" Width="26" ToolTip="Clear Search" Click="SongsSearchClearButton_Click" Height="23" Canvas.Top="4" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Button x:Name="FullLengthSongsShuffleAndPlayButton" Content="Shuffle and Play All" Canvas.Left="10" Canvas.Top="713" Width="336" Height="35" Click="FullLengthSongsShuffleAndPlayButton_Click" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Button x:Name="FullLengthSongsSortButton" Content="Sort Songs by Name" Canvas.Left="10" Canvas.Top="753" Width="336" Height="33" Click="FullLengthSongsSortButton_Click" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         </Canvas>
-    </UniformGrid>
+    </DockPanel>
 </Window>
