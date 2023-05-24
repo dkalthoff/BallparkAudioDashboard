@@ -24,6 +24,12 @@ namespace BallparkAudioDashboard
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly Random randomSongShuffler = new Random();
+        private readonly DispatcherTimer _fadeOutTimer = new DispatcherTimer();
+        private readonly DispatcherTimer _fadeOutTimer2 = new DispatcherTimer();
+        private const string SONG_SEARCH_TEXTBOX_DEFAULT_TEXT = "Search...";
+        private static readonly string DEFAULT_QUEUED_FILE_NAME = ConfigurationManager.AppSettings.Get("SavedQueuesDefaultFileName");
+
         private AudioFilesServices _audioFilesServices = null;
         private QueueServices _queueServices = null;
         private string _loadedQueueName = string.Empty;
@@ -31,14 +37,9 @@ namespace BallparkAudioDashboard
         private IEnumerable<Song> _soundClips = null;
         private bool _userIsDraggingSongSlider = false;
         private bool _userIsDraggingSong2Slider = false;
-        private static readonly Random randomSongShuffler = new Random();
         private bool _playAllFullLengthSongs = false;
         private bool _playAllQueuedSongs = false;
-        private readonly DispatcherTimer _fadeOutTimer = new DispatcherTimer();
-        private readonly DispatcherTimer _fadeOutTimer2 = new DispatcherTimer();
-
-        private const string SONG_SEARCH_TEXTBOX_DEFAULT_TEXT = "Search...";
-        private static readonly string DEFAULT_QUEUED_FILE_NAME = ConfigurationManager.AppSettings.Get("SavedQueuesDefaultFileName");
+        private double lastMasterVolumeSliderValue;
 
         public MainWindow()
         {
@@ -97,10 +98,10 @@ namespace BallparkAudioDashboard
             if (MasterVolumeSlider.Value != AudioManager.GetMasterVolume())
             {
                 MasterVolumeSlider.Value = AudioManager.GetMasterVolume();
-                MasterVolumeLevelLabel.Content = string.Format("{0}%", Math.Round(MasterVolumeSlider.Value));
+                setMasterVolumeLevelLabelContent(MasterVolumeSlider.Value);
             }
 
-            MuteButton.Content = AudioManager.GetMasterVolumeMute() ? "Unmute" : "Mute";
+            MuteButton.Content = MasterVolumeSlider.Value == 0 ? "Unmute" : "Mute";
         }
 
         private void FullSongsListView_Loaded(object sender, RoutedEventArgs e)
@@ -679,13 +680,25 @@ namespace BallparkAudioDashboard
         private void MasterVolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             AudioManager.SetMasterVolume((float)MasterVolumeSlider.Value);
+            setMasterVolumeLevelLabelContent(MasterVolumeSlider.Value);
+        }
+
+        private void setMasterVolumeLevelLabelContent(double volumeLevel)
+        {
             MasterVolumeLevelLabel.Content = string.Format("{0}%", Math.Round(MasterVolumeSlider.Value));
         }
 
         private void MuteButton_Click(object sender, RoutedEventArgs e)
         {
-            AudioManager.ToggleMasterVolumeMute();
-            MuteButton.Content = AudioManager.GetMasterVolumeMute() ? "Unmute" : "Mute";
+            if (MasterVolumeSlider.Value == 0)
+            {
+                MasterVolumeSlider.Value = lastMasterVolumeSliderValue;
+            }
+            else
+            {
+                lastMasterVolumeSliderValue = MasterVolumeSlider.Value;
+                MasterVolumeSlider.Value = 0;
+            }
         }
 
         #region PA Tab
@@ -795,6 +808,16 @@ namespace BallparkAudioDashboard
         private void WalkUpSongsListView_LoadInPlayer2(object sender, RoutedEventArgs e)
         {
             LoadInPlayerMediaElement2(WalkUpSongsListView);
+        }
+
+        private void VolumeUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            MasterVolumeSlider.Value += 3;
+        }
+
+        private void VolumeDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            MasterVolumeSlider.Value -= 3;
         }
     }
 }
