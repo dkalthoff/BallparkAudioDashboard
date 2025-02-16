@@ -24,6 +24,7 @@ namespace BallparkAudioDashboard
             _mainWindow = mainWindow;
             _allSongs = allSongs;
             _audioFilesServices = new AudioFilesServices();
+            Owner = Application.Current.MainWindow;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
