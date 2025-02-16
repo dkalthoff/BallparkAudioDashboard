@@ -40,6 +40,8 @@
             <Label Content="Misc Songs" Canvas.Left="10" Canvas.Top="168" FontWeight="Bold"/>
             <Button x:Name="TraditionSongsAddToQueueButton" Content="Add to Playlist" Canvas.Left="284" Canvas.Top="6" Width="82" Height="21" Click="TraditionSongsAddToQueueButton_Click" ToolTip="Add To Playlist" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Button x:Name="OrganSongsAddToQueueButton_Copy" Content="Add to Playlist" Canvas.Left="282" Canvas.Top="170" Width="82" Height="21" Click="OrganSongsAddToQueueButton_Copy_Click" ToolTip="Add To Playlist" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox x:Name="OrganSongsSearchTextBox" Height="23" Canvas.Left="85" TextWrapping="Wrap" Text="Search..." Canvas.Top="170" Width="142" KeyUp="OrganSongsSearchTextBox_KeyUp" GotFocus="OrganSongsSearchTextBox_GotFocus" LostFocus="OrganSongsSearchTextBox_LostFocus" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Button x:Name="OrganSongsSearchClearButton" Content="X" Canvas.Left="227" Canvas.Top="170" Width="29" Click="OrganSongsSearchClearButton_Click" Height="23" RenderTransformOrigin="0.655,-8.363" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         </Canvas>
         <Canvas Width="370">
             <ListView x:Name="SoundClipListView" Height="756" Canvas.Left="10" Canvas.Top="31" Width="356" Loaded="SoundClipListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick" HorizontalAlignment="Center" VerticalAlignment="Top">

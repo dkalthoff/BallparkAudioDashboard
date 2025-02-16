@@ -1,4 +1,5 @@
 ﻿using BallparkAudioDashboard.DataContracts;
+using BallparkAudioDashboard.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,12 +16,14 @@ namespace BallparkAudioDashboard
         public const string SONG_SEARCH_TEXTBOX_DEFAULT_TEXT = "Search...";
         private IEnumerable<Song> _allSongs = null;
         private MainWindow _mainWindow = null;
+        private AudioFilesServices _audioFilesServices = null;
 
         public MasterSearch(MainWindow mainWindow, IEnumerable<Song> allSongs)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
             _allSongs = allSongs;
+            _audioFilesServices = new AudioFilesServices();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -36,24 +39,9 @@ namespace BallparkAudioDashboard
             }
             else
             {
-                IEnumerable<Song> resultantSongs = _allSongs.Where(song => isMatch(song.Title.ToLower(), SearchTextBox.Text.ToLower()));
+                IEnumerable<Song> resultantSongs = _allSongs.Where(song => _audioFilesServices.isSongAMatch(song.Title, SearchTextBox.Text));
                 SearchResultListView.ItemsSource = new ObservableCollection<Song>(resultantSongs);
             }
-        }
-
-        private bool isMatch(string songTitle, string searchTerm)
-        {
-            bool isMatch;
-            if (searchTerm.Length == 1)
-            {
-                isMatch = songTitle.StartsWith(searchTerm) || songTitle.Contains(string.Format(" {0} ", searchTerm)) || songTitle.Contains(string.Format(" {0}", searchTerm));
-            }
-            else
-            {
-                isMatch = songTitle.Contains(searchTerm);
-            }
-
-            return isMatch;
         }
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)

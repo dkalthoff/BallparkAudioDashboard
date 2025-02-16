@@ -36,6 +36,7 @@ namespace BallparkAudioDashboard
         private string _loadedQueueName = string.Empty;
         private ObservableCollection<Song> _fullLengthSongs = null;
         private IEnumerable<Song> _soundClips = null;
+        private IEnumerable<Song> _organAndMiscSongs = null;
         private bool _userIsDraggingSongSlider = false;
         private bool _userIsDraggingSong2Slider = false;
         private bool _playAllFullLengthSongs = false;
@@ -122,8 +123,9 @@ namespace BallparkAudioDashboard
 
         private void OrganSongsListView_Loaded(object sender, RoutedEventArgs e)
         {
+            _organAndMiscSongs = _audioFilesServices.GetOrganSongs();
             ListView fullSongsListView = sender as ListView;
-            fullSongsListView.ItemsSource = _audioFilesServices.GetOrganSongs();
+            fullSongsListView.ItemsSource = _organAndMiscSongs;
         }
 
         private void SoundClipListView_Loaded(object sender, RoutedEventArgs e)
@@ -155,6 +157,42 @@ namespace BallparkAudioDashboard
         private void OrganSongsAddToQueueButton_Copy_Click(object sender, RoutedEventArgs e)
         {
             AddSongToQueue(OrganSongsListView);
+        }
+
+        private void OrganSongsSearchTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            IEnumerable<Song> resultantSongs = _organAndMiscSongs.Where(song => _audioFilesServices.isSongAMatch(song.Title, OrganSongsSearchTextBox.Text));
+            OrganSongsListView.ItemsSource = new ObservableCollection<Song>(resultantSongs);
+
+            if (OrganSongsSearchTextBox.Text != string.Empty)
+            {
+                OrganSongsSearchTextBox.Background = Brushes.Yellow;
+            }
+        }
+
+        private void OrganSongsSearchTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (OrganSongsSearchTextBox.Text == MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT)
+            {
+                OrganSongsSearchTextBox.Text = string.Empty;
+            }
+        }
+
+        private void OrganSongsSearchClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            OrganSongsListView.ItemsSource = _organAndMiscSongs;
+
+            OrganSongsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+            OrganSongsSearchTextBox.Background = Brushes.White;
+        }
+
+        private void OrganSongsSearchTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (OrganSongsSearchTextBox.Text == string.Empty)
+            {
+                OrganSongsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+                OrganSongsSearchTextBox.Background = Brushes.White;
+            }
         }
 
         private void FullSongsAddToQueueButton_Click(object sender, RoutedEventArgs e)
@@ -320,7 +358,7 @@ namespace BallparkAudioDashboard
 
         private void SongsSearchTextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            IEnumerable<Song> resultantSongs = _fullLengthSongs.Where(song => song.Title.IndexOf(SongsSearchTextBox.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            IEnumerable<Song> resultantSongs = _fullLengthSongs.Where(song => _audioFilesServices.isSongAMatch(song.Title, SongsSearchTextBox.Text));
             FullSongsListView.ItemsSource = new ObservableCollection<Song>(resultantSongs);
 
             if (SongsSearchTextBox.Text != string.Empty)
@@ -388,7 +426,7 @@ namespace BallparkAudioDashboard
 
         private void SoundClipsSearchTextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            IEnumerable<Song> resultantSoundClips = _soundClips.Where(song => song.Title.IndexOf(SoundClipsSearchTextBox.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            IEnumerable<Song> resultantSoundClips = _soundClips.Where(song => _audioFilesServices.isSongAMatch(song.Title, SoundClipsSearchTextBox.Text));
             SoundClipListView.Items.Clear();
             foreach (Song song in resultantSoundClips)
             {
@@ -412,7 +450,7 @@ namespace BallparkAudioDashboard
         private void SoundClipsSearchClearButton_Click(object sender, RoutedEventArgs e)
         {
             SoundClipsSearchTextBox.Text = string.Empty;
-            IEnumerable<Song> resultantSoundClips = _soundClips.Where(song => song.Title.IndexOf(SoundClipsSearchTextBox.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+            IEnumerable<Song> resultantSoundClips = _soundClips.Where(song => _audioFilesServices.isSongAMatch(song.Title, SoundClipsSearchTextBox.Text));
             SoundClipListView.Items.Clear();
             foreach (Song soundClip in resultantSoundClips)
             {

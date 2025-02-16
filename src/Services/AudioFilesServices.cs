@@ -77,5 +77,23 @@ namespace BallparkAudioDashboard.Services
             if (ConfigurationManager.AppSettings.Get(configurationKey) == null) throw new Exception(string.Format("Configuration missing \"{0}\" in AppSettings. Add to App.config", configurationKey));
             return ConfigurationManager.AppSettings.Get(configurationKey);
         }
+
+        public bool isSongAMatch(string songTitle, string searchTerm)
+        {
+            bool isMatch;
+            songTitle = songTitle.ToLower();
+            searchTerm = searchTerm.ToLower();
+
+            if (searchTerm.Length == 1)
+            {
+                isMatch = songTitle.StartsWith(searchTerm) || songTitle.Contains(string.Format(" {0} ", searchTerm)) || songTitle.Contains(string.Format(" {0}", searchTerm));
+            }
+            else
+            {
+                isMatch = songTitle.Contains(searchTerm);
+            }
+
+            return isMatch;
+        }
     }
 }
