@@ -14,3 +14,7 @@ Features
 
 ![Ballpark Audio Dashboard](ScreenCapture.PNG "Screen capture of the Windows Application")
 
+Installation Instructions
+1. Download EXE and Config
+2. Modify Config file with your values
+3. Run EXE file (No installation required)
