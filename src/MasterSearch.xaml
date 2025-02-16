@@ -1,0 +1,52 @@
+﻿<Window x:Class="BallparkAudioDashboard.MasterSearch"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BallparkAudioDashboard"
+        mc:Ignorable="d"
+        Title="Search" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="20,20,20,20" FocusManager.FocusedElement="{Binding ElementName=SearchTextBox}">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <Label Content="Enter search term" HorizontalAlignment="Left" FontWeight="Bold" VerticalAlignment="Top" Height="24"/>
+                <TextBox x:Name="SearchTextBox" HorizontalAlignment="Center" Text="Search..." Width="500" Height="38" FontSize="22" FontWeight="Bold" FontFamily="Segoe UI Variable Display Semibold" KeyUp="SearchTextBox_KeyUp" GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <Label Content="Double-click result to start playing or select actions to the right" HorizontalAlignment="Left" Margin="0,5,0,0" FontWeight="Bold" Height="26"/>
+                <StackPanel Orientation="Horizontal">
+                    <ListView x:Name="SearchResultListView" Height="250" Width="500" MouseDoubleClick="SearchResultListView_MouseDoubleClick" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <WrapPanel>
+                                <TextBlock Text="{Binding Title}"/>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add to Playlist" Click="SearchResultListView_AddToQueue"/>
+                            <MenuItem Header="Load In Player One" Click="SearchResultListView_LoadInPlayer"/>
+                            <MenuItem Header="Load In Player Two" Click="SearchResultListView_LoadInPlayer2"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
+                    <StackPanel Orientation="Vertical" Margin="10,0,0,0"> 
+                        <StackPanel Orientation="Vertical">
+                            <Label Content="Start Playing in:" HorizontalAlignment="Left" FontWeight="Bold" Height="26"/>
+                            <Button Content="One" Click="PlayInOne_Click" Margin="0,0,0,0" IsEnabled="{Binding ElementName=SearchResultListView, Path=SelectedItems.Count}"/>
+                            <Button Content="Two" Click="PlayInTwo_Click" Margin="0,5,0,0" IsEnabled="{Binding ElementName=SearchResultListView, Path=SelectedItems.Count}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="0,30,0,0">
+                            <Label Content="Load &amp; Play Later in:" HorizontalAlignment="Left" FontWeight="Bold" Height="26"/>
+                            <Button Content="One" Click="LoadInOne_Click" Margin="0,0,0,0" IsEnabled="{Binding ElementName=SearchResultListView, Path=SelectedItems.Count}"/>
+                            <Button Content="Two" Click="LoadInTwo_Click" Margin="0,5,0,0" IsEnabled="{Binding ElementName=SearchResultListView, Path=SelectedItems.Count}"/>
+                            <Button Content="Add To Playlist" Click="AddToPlaylist_Click" Margin="0,35,0,0" IsEnabled="{Binding ElementName=SearchResultListView, Path=SelectedItems.Count}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <Button Content="Close" Width="400" Height="30" Click="CloseButton_Click" VerticalAlignment="Bottom" Margin="0,5,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

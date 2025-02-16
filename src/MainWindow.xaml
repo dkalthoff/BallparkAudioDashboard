@@ -37,7 +37,7 @@
                 </ListView.ContextMenu>
             </ListView>
             <Label Content="Traditional Songs" Canvas.Left="10" Canvas.Top="5" FontWeight="Bold"/>
-            <Label Content="Full Organ and Misc Songs" Canvas.Left="10" Canvas.Top="168" FontWeight="Bold"/>
+            <Label Content="Misc Songs" Canvas.Left="10" Canvas.Top="168" FontWeight="Bold"/>
             <Button x:Name="TraditionSongsAddToQueueButton" Content="Add to Playlist" Canvas.Left="284" Canvas.Top="6" Width="82" Height="21" Click="TraditionSongsAddToQueueButton_Click" ToolTip="Add To Playlist" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Button x:Name="OrganSongsAddToQueueButton_Copy" Content="Add to Playlist" Canvas.Left="282" Canvas.Top="170" Width="82" Height="21" Click="OrganSongsAddToQueueButton_Copy_Click" ToolTip="Add To Playlist" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </Canvas>
@@ -73,7 +73,7 @@
                     </TextBlock.LayoutTransform>
                 </TextBlock>
                 <Label x:Name="SongTitleLabel" Content="Double Click A Song To Play" FontWeight="Bold" Width="Auto" Canvas.Left="3"/>
-                <Label x:Name="SongCountUpLabel" Content="0:00" Canvas.Left="18" Canvas.Top="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Label x:Name="SongCountUpLabel" Content="0:00" Canvas.Left="13" Canvas.Top="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Slider x:Name="SongSlider" Canvas.Left="50" Canvas.Top="25" Width="270" Thumb.DragStarted="SongSlider_DragStarted" Thumb.DragCompleted="SongSlider_DragCompleted" ValueChanged="SongSlider_ValueChanged" IsMoveToPointEnabled="True" MouseLeftButtonUp="SongSlider_MouseLeftButtonUp" HorizontalAlignment="Center" Height="22" VerticalAlignment="Top"/>
                 <Label x:Name="SongCountDownLabel" Content="0:00" Canvas.Left="320" Canvas.Top="20"/>
                 <Button x:Name="FadeInButton" Content="Play - Fade In" Canvas.Top="48" Canvas.Left="25" Width="160" Height="34" Click="FadeInButton_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
@@ -88,7 +88,7 @@
                     </TextBlock.LayoutTransform>
                 </TextBlock>
                 <Label x:Name="Song2TitleLabel" Content="Add by right-clicking on song" FontWeight="Bold" Width="Auto" Canvas.Left="3"/>
-                <Label x:Name="Song2CountUpLabel" Content="0:00" Canvas.Left="18" Canvas.Top="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Label x:Name="Song2CountUpLabel" Content="0:00" Canvas.Left="15" Canvas.Top="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Slider x:Name="Song2Slider" Canvas.Left="50" Canvas.Top="24" Width="270" Thumb.DragStarted="Song2Slider_DragStarted" Thumb.DragCompleted="Song2Slider_DragCompleted" ValueChanged="Song2Slider_ValueChanged" IsMoveToPointEnabled="True" MouseLeftButtonUp="Song2Slider_MouseLeftButtonUp" HorizontalAlignment="Center" Height="25" VerticalAlignment="Top"/>
                 <Label x:Name="Song2CountDownLabel" Content="0:00" Canvas.Left="320" Canvas.Top="20"/>
                 <Button x:Name="FadeIn2Button" Content="Play - Fade In" Canvas.Top="48" Canvas.Left="25" Width="160" Height="34" Click="FadeIn2Button_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
@@ -126,12 +126,9 @@
                 </TabItem>
                 <TabItem Header="Walkup Songs">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="18*"/>
-                            <ColumnDefinition Width="129*"/>
-                            <ColumnDefinition Width="181*"/>
-                        </Grid.ColumnDefinitions>
-                        <ListView x:Name="WalkUpSongsListView" MouseDoubleClick="ListView_MouseDoubleClick" Margin="0,10,2,57" Loaded="WalkUpSongsListView_Loaded" Grid.ColumnSpan="3">
+                        <Label Content="Load Team" Margin="2,3,217,542"/>
+                        <ComboBox x:Name="WalkupTeamsComboBox" ToolTip="Load Team" SelectionChanged="WalkupTeamsComboBox_SelectionChanged" Loaded="WalkupTeamsComboBox_Loaded" Margin="84,6,96,546"/>
+                        <ListView x:Name="WalkUpSongsListView" MouseDoubleClick="ListView_MouseDoubleClick" Margin="0,41,2,1">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <WrapPanel>
@@ -162,13 +159,20 @@
             </TabControl>
         </Canvas>
         <Canvas Width="74">
-            <Label Content="Volume" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Width="64" HorizontalContentAlignment="Center"></Label>
-            <Slider Name="MasterVolumeSlider" Orientation="Vertical" Height="300" Width="29" Maximum="100" HorizontalAlignment="Left" TickFrequency="3" IsSnapToTickEnabled="True" TickPlacement="BottomRight" Canvas.Left="25" Canvas.Top="22" ValueChanged="MasterVolumeSlider_ValueChanged" VerticalAlignment="Center"></Slider>
-            <Button Name="VolumeUpButton" Content="+" HorizontalAlignment="Left" Canvas.Top="333" VerticalAlignment="Center" Height="34" Width="36" Click="VolumeUpButton_Click" FontWeight="Bold"/>
-            <Button Name="VolumeDownButton" Content="-" HorizontalAlignment="Left" Canvas.Top="333
-                    " VerticalAlignment="Center" Height="34" Width="36" Canvas.Left="39" Click="VolumeDownButton_Click" FontWeight="Bold"></Button>
-            <Button Name="MuteButton" Content="Mute" HorizontalAlignment="Left" Canvas.Top="378" VerticalAlignment="Top" Height="34" Width="74" Click="MuteButton_Click" FontWeight="Bold"/>
-            <Label Name="MasterVolumeLevelLabel" FontWeight="Bold" Content="100%" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Canvas.Top="417" Canvas.Left="1" HorizontalContentAlignment="Center" Width="71" FontSize="20"></Label>
+            <Canvas.Background>
+                <ImageBrush/>
+            </Canvas.Background>
+            <Label Content="Volume" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Width="64" HorizontalContentAlignment="Center" Canvas.Left="3" Canvas.Top="125"></Label>
+            <Slider Name="MasterVolumeSlider" Orientation="Vertical" Height="300" Width="29" Maximum="100" HorizontalAlignment="Left" TickFrequency="3" IsSnapToTickEnabled="True" TickPlacement="BottomRight" Canvas.Left="28" Canvas.Top="152" ValueChanged="MasterVolumeSlider_ValueChanged" VerticalAlignment="Top"></Slider>
+            <Button Name="VolumeUpButton" Content="+" HorizontalAlignment="Left" Canvas.Top="463" VerticalAlignment="Top" Height="34" Width="36" Click="VolumeUpButton_Click" FontWeight="Bold" Canvas.Left="3"/>
+            <Button Name="VolumeDownButton" Content="-" HorizontalAlignment="Left" Canvas.Top="463" VerticalAlignment="Top" Height="34" Width="36" Canvas.Left="42" Click="VolumeDownButton_Click" FontWeight="Bold"></Button>
+            <Button Name="MuteButton" Content="Mute" HorizontalAlignment="Left" Canvas.Top="508" VerticalAlignment="Top" Height="34" Width="74" Click="MuteButton_Click" FontWeight="Bold" Canvas.Left="3"/>
+            <Label Name="MasterVolumeLevelLabel" FontWeight="Bold" Content="100%" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Canvas.Top="547" Canvas.Left="4" HorizontalContentAlignment="Center" Width="71" FontSize="20"></Label>
+            <Button Width="67" Height="61" Click="OpenMasterSearchDialog_Click" Canvas.Left="4" Canvas.Top="47" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Search all music">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Assets/magnify.png" Width="67" Height="67" Margin="0,0,5,0"/>
+                </StackPanel>
+            </Button>
         </Canvas>
         <Canvas Width="360" HorizontalAlignment="Left">
             <ListView x:Name="FullSongsListView" Loaded="FullSongsListView_Loaded" MouseDoubleClick="ListView_MouseDoubleClick" Height="679" Width="336" Canvas.Top="29" Canvas.Left="10" HorizontalAlignment="Center" VerticalAlignment="Top">

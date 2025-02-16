@@ -27,8 +27,9 @@ namespace BallparkAudioDashboard
         private static readonly Random randomSongShuffler = new Random();
         private readonly DispatcherTimer _fadeOutTimer = new DispatcherTimer();
         private readonly DispatcherTimer _fadeOutTimer2 = new DispatcherTimer();
-        private const string SONG_SEARCH_TEXTBOX_DEFAULT_TEXT = "Search...";
+
         private static readonly string DEFAULT_QUEUED_FILE_NAME = ConfigurationManager.AppSettings.Get("SavedQueuesDefaultFileName");
+        private static readonly string WALK_UP_DEFAULT_FOLDER_NAME = ConfigurationManager.AppSettings.Get("WalkUpDefaultFolderName");
 
         private AudioFilesServices _audioFilesServices = null;
         private QueueServices _queueServices = null;
@@ -40,6 +41,7 @@ namespace BallparkAudioDashboard
         private bool _playAllFullLengthSongs = false;
         private bool _playAllQueuedSongs = false;
         private double lastMasterVolumeSliderValue;
+        private IEnumerable<Song> _allSongs = null;
 
         public MainWindow()
         {
@@ -55,8 +57,8 @@ namespace BallparkAudioDashboard
             _audioFilesServices = new AudioFilesServices();
             _queueServices = new QueueServices();
 
-            SongsSearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
-            SoundClipsSearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+            SongsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+            SoundClipsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
 
             QueueSongsListView.ItemsSource = new ObservableCollection<Song>();
 
@@ -74,6 +76,8 @@ namespace BallparkAudioDashboard
             _fadeOutTimer2.Tick += _fadeOutTimer2_Tick;
 
             new ListViewDragDropManager<Song>(QueueSongsListView);
+
+            _allSongs = _audioFilesServices.GetAllSongs();
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -139,12 +143,7 @@ namespace BallparkAudioDashboard
 
             if (originalSource.DataContext != source.DataContext)
             {
-                Song song = ((ListView)sender).SelectedItem as Song;
-                PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
-                PlayerMediaElement.Source = new Uri(song.FullPath);
-                PlayerMediaElement.Play();
-                _playAllFullLengthSongs = false;
-                _playAllQueuedSongs = false;
+                PlayInPlayerMediaElement((ListView)sender);
             }
         }
 
@@ -168,7 +167,7 @@ namespace BallparkAudioDashboard
             AddSongToQueue(SoundClipListView);
         }
 
-        private void AddSongToQueue(ListView listView)
+        public void AddSongToQueue(ListView listView)
         {
             foreach (Song song in listView.SelectedItems)
             {
@@ -262,12 +261,15 @@ namespace BallparkAudioDashboard
 
         private void SavedQueuesComboBox_Loaded(object sender, RoutedEventArgs e)
         {
-            IEnumerable<string> savedQueues = _queueServices.Get().OrderBy(q => q);
-            SavedQueuesComboBox.ItemsSource = null;
-            SavedQueuesComboBox.ItemsSource = savedQueues;
-            if (savedQueues.Contains(DEFAULT_QUEUED_FILE_NAME))
+            if (SavedQueuesComboBox.ItemsSource == null)
             {
-                SavedQueuesComboBox.SelectedItem = savedQueues.First(q => q == DEFAULT_QUEUED_FILE_NAME);
+                IEnumerable<string> savedQueues = _queueServices.Get().OrderBy(q => q);
+                SavedQueuesComboBox.ItemsSource = null;
+                SavedQueuesComboBox.ItemsSource = savedQueues;
+                if (savedQueues.Contains(DEFAULT_QUEUED_FILE_NAME))
+                {
+                    SavedQueuesComboBox.SelectedItem = savedQueues.First(q => q == DEFAULT_QUEUED_FILE_NAME);
+                }
             }
         }
 
@@ -329,7 +331,7 @@ namespace BallparkAudioDashboard
 
         private void SongsSearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (SongsSearchTextBox.Text == SONG_SEARCH_TEXTBOX_DEFAULT_TEXT)
+            if (SongsSearchTextBox.Text == MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT)
             {
                 SongsSearchTextBox.Text = string.Empty;
             }
@@ -339,7 +341,7 @@ namespace BallparkAudioDashboard
         {
             FullSongsListView.ItemsSource = _fullLengthSongs;
 
-            SongsSearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+            SongsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
             SongsSearchTextBox.Background = Brushes.White;
         }
 
@@ -347,7 +349,7 @@ namespace BallparkAudioDashboard
         {
             if (SongsSearchTextBox.Text == string.Empty)
             {
-                SongsSearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+                SongsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
                 SongsSearchTextBox.Background = Brushes.White;
             }
         }
@@ -401,7 +403,7 @@ namespace BallparkAudioDashboard
 
         private void SoundClipsSearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (SoundClipsSearchTextBox.Text == SONG_SEARCH_TEXTBOX_DEFAULT_TEXT)
+            if (SoundClipsSearchTextBox.Text == MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT)
             {
                 SoundClipsSearchTextBox.Text = string.Empty;
             }
@@ -417,7 +419,7 @@ namespace BallparkAudioDashboard
                 SoundClipListView.Items.Add(soundClip);
             }
 
-            SoundClipsSearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+            SoundClipsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
             SoundClipsSearchTextBox.Background = Brushes.White;
         }
 
@@ -425,7 +427,7 @@ namespace BallparkAudioDashboard
         {
             if (SoundClipsSearchTextBox.Text == string.Empty)
             {
-                SoundClipsSearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+                SoundClipsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
                 SoundClipsSearchTextBox.Background = Brushes.White;
             }
         }
@@ -435,7 +437,7 @@ namespace BallparkAudioDashboard
             _fullLengthSongs = new ObservableCollection<Song>(_audioFilesServices.GetFullLengthSongs());
             FullSongsListView.ItemsSource = _fullLengthSongs;
 
-            SongsSearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+            SongsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
             SongsSearchTextBox.Background = Brushes.White;
         }
 
@@ -456,7 +458,7 @@ namespace BallparkAudioDashboard
         {
             PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
 
-            SongsSearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+            SongsSearchTextBox.Text = MasterSearch.SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
             _fullLengthSongs = new ObservableCollection<Song>(_audioFilesServices.GetFullLengthSongs());
             ShuffleSongs(_fullLengthSongs);
             FullSongsListView.ItemsSource = _fullLengthSongs;
@@ -551,7 +553,7 @@ namespace BallparkAudioDashboard
             PlayerMediaElement2.Position = TimeSpan.FromSeconds(Song2Slider.Value);
         }
 
-        private void LoadInPlayerMediaElement(ListView listView)
+        public void LoadInPlayerMediaElement(ListView listView)
         {
             if (listView.SelectedIndex == -1) return;
 
@@ -562,7 +564,19 @@ namespace BallparkAudioDashboard
             PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 0, TimeSpan.FromSeconds(1)));
         }
 
-        private void LoadInPlayerMediaElement2(ListView listView)
+        public void PlayInPlayerMediaElement(ListView listView)
+        {
+            if (listView.SelectedIndex == -1) return;
+
+            Song song = listView.SelectedItem as Song;
+            PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
+            PlayerMediaElement.Source = new Uri(song.FullPath);
+            PlayerMediaElement.Play();
+            _playAllFullLengthSongs = false;
+            _playAllQueuedSongs = false;
+        }
+
+        public void LoadInPlayerMediaElement2(ListView listView)
         {
             if (listView.SelectedIndex == -1) return;
 
@@ -571,6 +585,16 @@ namespace BallparkAudioDashboard
             PlayerMediaElement2.Play();
             PlayerMediaElement2.Pause();
             PlayerMediaElement2.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 0, TimeSpan.FromSeconds(1)));
+        }
+
+        public void PlayInPlayerMediaElement2(ListView listView)
+        {
+            if (listView.SelectedIndex == -1) return;
+
+            Song song = listView.SelectedItem as Song;
+            PlayerMediaElement2.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
+            PlayerMediaElement2.Source = new Uri(song.FullPath);
+            PlayerMediaElement2.Play();
         }
 
         private void FullSongsListView_LoadInPlayer(object sender, RoutedEventArgs e)
@@ -795,9 +819,24 @@ namespace BallparkAudioDashboard
         }
         #endregion
 
-        private void WalkUpSongsListView_Loaded(object sender, RoutedEventArgs e)
+        private void WalkupTeamsComboBox_Loaded(object sender, RoutedEventArgs e)
         {
-            WalkUpSongsListView.ItemsSource = new ObservableCollection<Song>(_audioFilesServices.GetWalkUpSongs());
+            if (WalkupTeamsComboBox.ItemsSource == null)
+            {
+                IEnumerable<string> teamFolderNames = _audioFilesServices.GetWalkUpTeamFolderNames();
+                WalkupTeamsComboBox.ItemsSource = null;
+                WalkupTeamsComboBox.ItemsSource = teamFolderNames;
+                if (teamFolderNames.Contains(WALK_UP_DEFAULT_FOLDER_NAME))
+                {
+                    WalkupTeamsComboBox.SelectedItem = teamFolderNames.First(q => q == WALK_UP_DEFAULT_FOLDER_NAME);
+                }
+            }
+        }
+
+        private void WalkupTeamsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string folderName = ((ComboBox)sender).SelectedItem as string;
+            WalkUpSongsListView.ItemsSource = new ObservableCollection<Song>(_audioFilesServices.GetWalkUpSongs(folderName));
         }
 
         private void WalkUpSongsListView_LoadInPlayer(object sender, RoutedEventArgs e)
@@ -818,6 +857,12 @@ namespace BallparkAudioDashboard
         private void VolumeDownButton_Click(object sender, RoutedEventArgs e)
         {
             MasterVolumeSlider.Value -= 3;
+        }
+
+        private void OpenMasterSearchDialog_Click(object sender, RoutedEventArgs e)
+        {
+            MasterSearch _masterSearchWindow = new MasterSearch(this, _allSongs);
+            _masterSearchWindow.ShowDialog(); // Open as a modal dialog
         }
     }
 }

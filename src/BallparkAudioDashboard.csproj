@@ -64,6 +64,9 @@
     <Compile Include="Helpers\DragAdorner.cs" />
     <Compile Include="Helpers\ListViewDragDropManager.cs" />
     <Compile Include="Helpers\MouseUtilities.cs" />
+    <Compile Include="MasterSearch.xaml.cs">
+      <DependentUpon>MasterSearch.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\AudioFilesServices.cs" />
     <Compile Include="Services\QueueServices.cs" />
     <Page Include="MainWindow.xaml">
@@ -78,6 +81,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MasterSearch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -107,6 +114,9 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\magnify.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

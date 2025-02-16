@@ -11,33 +11,43 @@ namespace BallparkAudioDashboard.Services
     {
         public IEnumerable<Song> GetFullLengthSongs()
         {
-            return GetSongs("SongsPath");
+            return GetSongs(GetFolderPath("SongsPath"));
         }
 
         public IEnumerable<Song> GetTraditionSongs()
         {
-            return GetSongs("TraditionSongsPath");
+            return GetSongs(GetFolderPath("TraditionSongsPath"));
         }
 
         public IEnumerable<Song> GetOrganSongs()
         {
-            return GetSongs("FullOrganAndMiscPath");
+            return GetSongs(GetFolderPath("FullOrganAndMiscPath"));
         }
 
         public IEnumerable<Song> GetSoundClips()
         {
-            return GetSongs("SoundClipsPath");
+            return GetSongs(GetFolderPath("SoundClipsPath"));
         }
 
-        public IEnumerable<Song> GetWalkUpSongs()
+        public IEnumerable<string> GetWalkUpTeamFolderNames()
         {
-            return GetSongs("WalkUpSongsPath");
+            List<string> teamFolderNames = new List<string>();
+            string walkUpSongsFolderPath = GetFolderPath("WalkUpSongsPath");
+            if (Directory.Exists(walkUpSongsFolderPath))
+            {
+                teamFolderNames = Directory.GetDirectories(walkUpSongsFolderPath).OrderBy(f => f).Select(Path.GetFileName).ToList();
+            }
+
+            return teamFolderNames;
         }
 
-        private IEnumerable<Song> GetSongs(string configurationKey)
+        public IEnumerable<Song> GetWalkUpSongs(string folderName)
         {
-            string folderPath = GetFolderPath(configurationKey);
+            return GetSongs(Path.Combine(GetFolderPath("WalkUpSongsPath"), folderName));
+        }
 
+        private IEnumerable<Song> GetSongs(string folderPath)
+        {
             if (Directory.Exists(folderPath))
             {
                 return new DirectoryInfo(folderPath).GetFiles().Select(file => new Song
@@ -48,6 +58,18 @@ namespace BallparkAudioDashboard.Services
             }
 
             return new List<Song>();
+        }
+
+        public IEnumerable<Song> GetAllSongs()
+        {
+            IEnumerable<Song> allSongs = GetFullLengthSongs().Concat(GetTraditionSongs().Concat(GetOrganSongs().Concat(GetSoundClips())));
+
+            foreach (string teamFolderName in GetWalkUpTeamFolderNames())
+            {
+                allSongs = allSongs.Concat(GetWalkUpSongs(teamFolderName));
+            }
+
+            return allSongs;
         }
 
         private string GetFolderPath(string configurationKey)
