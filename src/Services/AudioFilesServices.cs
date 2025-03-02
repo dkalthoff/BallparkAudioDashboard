@@ -78,7 +78,7 @@ namespace BallparkAudioDashboard.Services
             return ConfigurationManager.AppSettings.Get(configurationKey);
         }
 
-        public bool isSongAMatch(string songTitle, string searchTerm)
+        public bool IsSongAMatch(string songTitle, string searchTerm)
         {
             bool isMatch;
             songTitle = songTitle.ToLower();
@@ -94,6 +94,19 @@ namespace BallparkAudioDashboard.Services
             }
 
             return isMatch;
+        }
+
+        public Song GetStrikeoutSoundClip()
+        {
+            Song song = null;
+
+            string filePath = ConfigurationManager.AppSettings.Get("StrikeoutSoundClipFilePath");
+            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+            {
+                song = new Song { FullPath = filePath, Title = new FileInfo(filePath).Name };
+            }
+
+            return song;
         }
     }
 }

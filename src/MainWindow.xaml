@@ -78,8 +78,8 @@
                 <Label x:Name="SongCountUpLabel" Content="0:00" Canvas.Left="13" Canvas.Top="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Slider x:Name="SongSlider" Canvas.Left="50" Canvas.Top="25" Width="270" Thumb.DragStarted="SongSlider_DragStarted" Thumb.DragCompleted="SongSlider_DragCompleted" ValueChanged="SongSlider_ValueChanged" IsMoveToPointEnabled="True" MouseLeftButtonUp="SongSlider_MouseLeftButtonUp" HorizontalAlignment="Center" Height="22" VerticalAlignment="Top"/>
                 <Label x:Name="SongCountDownLabel" Content="0:00" Canvas.Left="320" Canvas.Top="20"/>
-                <Button x:Name="FadeInButton" Content="Play - Fade In" Canvas.Top="48" Canvas.Left="25" Width="160" Height="34" Click="FadeInButton_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <Button x:Name="FadeOutButton" Content="Stop - Fade Out" Canvas.Top="48" Canvas.Left="190" Width="160" Height="34" FontWeight="Bold" ToolTip="Fade Song Out" Click="FadeOutButton_Click" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.661,0.548"/>
+                <Button x:Name="FadeInButton" Content="_Play - Fade In" Canvas.Top="48" Canvas.Left="25" Width="160" Height="34" Click="FadeInButton_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Button x:Name="FadeOutButton" Content="_Stop - Fade Out" Canvas.Top="48" Canvas.Left="190" Width="160" Height="34" FontWeight="Bold" ToolTip="Fade Song Out" Click="FadeOutButton_Click" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.661,0.548"/>
             </Canvas>
             <Canvas Width="360" Canvas.Top="90">
                 <MediaElement x:Name="PlayerMediaElement2" Visibility="Hidden" LoadedBehavior="Manual" Volume="1" MediaEnded="PlayerMediaElement2_MediaEnded" MediaOpened="PlayerMediaElement2_MediaOpened"/>
@@ -93,8 +93,8 @@
                 <Label x:Name="Song2CountUpLabel" Content="0:00" Canvas.Left="15" Canvas.Top="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Slider x:Name="Song2Slider" Canvas.Left="50" Canvas.Top="24" Width="270" Thumb.DragStarted="Song2Slider_DragStarted" Thumb.DragCompleted="Song2Slider_DragCompleted" ValueChanged="Song2Slider_ValueChanged" IsMoveToPointEnabled="True" MouseLeftButtonUp="Song2Slider_MouseLeftButtonUp" HorizontalAlignment="Center" Height="25" VerticalAlignment="Top"/>
                 <Label x:Name="Song2CountDownLabel" Content="0:00" Canvas.Left="320" Canvas.Top="20"/>
-                <Button x:Name="FadeIn2Button" Content="Play - Fade In" Canvas.Top="48" Canvas.Left="25" Width="160" Height="34" Click="FadeIn2Button_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <Button x:Name="FadeOut2Button" Content="Stop - Fade Out" Canvas.Top="48" Canvas.Left="190" Width="160" Height="34" FontWeight="Bold" ToolTip="Fade Song Out" Click="FadeOut2Button_Click" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.661,0.548"/>
+                <Button x:Name="FadeIn2Button" Content="Play - Fade _In" Canvas.Top="48" Canvas.Left="25" Width="160" Height="34" Click="FadeIn2Button_Click" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Button x:Name="FadeOut2Button" Content="Stop - Fade _Out" Canvas.Top="48" Canvas.Left="190" Width="160" Height="34" FontWeight="Bold" ToolTip="Fade Song Out" Click="FadeOut2Button_Click" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.661,0.548"/>
             </Canvas>
             <TabControl Height="601" Canvas.Top="185" Canvas.Left="10" Width="345" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TabItem Header="Playlists">
@@ -168,11 +168,13 @@
             <Slider Name="MasterVolumeSlider" Orientation="Vertical" Height="300" Width="29" Maximum="100" HorizontalAlignment="Left" TickFrequency="3" IsSnapToTickEnabled="True" TickPlacement="BottomRight" Canvas.Left="28" Canvas.Top="152" ValueChanged="MasterVolumeSlider_ValueChanged" VerticalAlignment="Top"></Slider>
             <Button Name="VolumeUpButton" Content="+" HorizontalAlignment="Left" Canvas.Top="463" VerticalAlignment="Top" Height="34" Width="36" Click="VolumeUpButton_Click" FontWeight="Bold" Canvas.Left="3"/>
             <Button Name="VolumeDownButton" Content="-" HorizontalAlignment="Left" Canvas.Top="463" VerticalAlignment="Top" Height="34" Width="36" Canvas.Left="42" Click="VolumeDownButton_Click" FontWeight="Bold"></Button>
-            <Button Name="MuteButton" Content="Mute" HorizontalAlignment="Left" Canvas.Top="508" VerticalAlignment="Top" Height="34" Width="74" Click="MuteButton_Click" FontWeight="Bold" Canvas.Left="3"/>
+            <Button Name="MuteButton" Content="_Mute" HorizontalAlignment="Left" Canvas.Top="508" VerticalAlignment="Top" Height="34" Width="74" Click="MuteButton_Click" FontWeight="Bold" Canvas.Left="3"/>
+            <Button Name="StrikeoutButton" Content="Stri_keout" HorizontalAlignment="Left" Canvas.Top="738" Height="34" Width="74" Click="StrikeoutButton_Click" FontWeight="Bold" Canvas.Left="3"/>
             <Label Name="MasterVolumeLevelLabel" FontWeight="Bold" Content="100%" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Canvas.Top="547" Canvas.Left="4" HorizontalContentAlignment="Center" Width="71" FontSize="20"></Label>
-            <Button Width="67" Height="61" Click="OpenMasterSearchDialog_Click" Canvas.Left="4" Canvas.Top="47" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Search all music">
+            <Button Width="67" Height="61" Click="OpenMasterSearchDialog_Click" Canvas.Left="4" Canvas.Top="47" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Search All Music">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Assets/magnify.png" Width="67" Height="67" Margin="0,0,5,0"/>
+                    <Label Visibility="Visible">_MasterSearch</Label>
                 </StackPanel>
             </Button>
         </Canvas>

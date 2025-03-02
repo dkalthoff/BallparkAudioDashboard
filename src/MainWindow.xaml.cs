@@ -161,7 +161,7 @@ namespace BallparkAudioDashboard
 
         private void OrganSongsSearchTextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            IEnumerable<Song> resultantSongs = _organAndMiscSongs.Where(song => _audioFilesServices.isSongAMatch(song.Title, OrganSongsSearchTextBox.Text));
+            IEnumerable<Song> resultantSongs = _organAndMiscSongs.Where(song => _audioFilesServices.IsSongAMatch(song.Title, OrganSongsSearchTextBox.Text));
             OrganSongsListView.ItemsSource = new ObservableCollection<Song>(resultantSongs);
 
             if (OrganSongsSearchTextBox.Text != string.Empty)
@@ -358,7 +358,7 @@ namespace BallparkAudioDashboard
 
         private void SongsSearchTextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            IEnumerable<Song> resultantSongs = _fullLengthSongs.Where(song => _audioFilesServices.isSongAMatch(song.Title, SongsSearchTextBox.Text));
+            IEnumerable<Song> resultantSongs = _fullLengthSongs.Where(song => _audioFilesServices.IsSongAMatch(song.Title, SongsSearchTextBox.Text));
             FullSongsListView.ItemsSource = new ObservableCollection<Song>(resultantSongs);
 
             if (SongsSearchTextBox.Text != string.Empty)
@@ -426,7 +426,7 @@ namespace BallparkAudioDashboard
 
         private void SoundClipsSearchTextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            IEnumerable<Song> resultantSoundClips = _soundClips.Where(song => _audioFilesServices.isSongAMatch(song.Title, SoundClipsSearchTextBox.Text));
+            IEnumerable<Song> resultantSoundClips = _soundClips.Where(song => _audioFilesServices.IsSongAMatch(song.Title, SoundClipsSearchTextBox.Text));
             SoundClipListView.Items.Clear();
             foreach (Song song in resultantSoundClips)
             {
@@ -450,7 +450,7 @@ namespace BallparkAudioDashboard
         private void SoundClipsSearchClearButton_Click(object sender, RoutedEventArgs e)
         {
             SoundClipsSearchTextBox.Text = string.Empty;
-            IEnumerable<Song> resultantSoundClips = _soundClips.Where(song => _audioFilesServices.isSongAMatch(song.Title, SoundClipsSearchTextBox.Text));
+            IEnumerable<Song> resultantSoundClips = _soundClips.Where(song => _audioFilesServices.IsSongAMatch(song.Title, SoundClipsSearchTextBox.Text));
             SoundClipListView.Items.Clear();
             foreach (Song soundClip in resultantSoundClips)
             {
@@ -605,8 +605,13 @@ namespace BallparkAudioDashboard
         public void PlayInPlayerMediaElement(ListView listView)
         {
             if (listView.SelectedIndex == -1) return;
+            PlayInPlayerMediaElement(listView.SelectedItem as Song);
+        }
 
-            Song song = listView.SelectedItem as Song;
+        public void PlayInPlayerMediaElement(Song song)
+        {
+            if (song == null) return;
+
             PlayerMediaElement.BeginAnimation(MediaElement.VolumeProperty, new DoubleAnimation(PlayerMediaElement.Volume, 1, TimeSpan.FromSeconds(1)));
             PlayerMediaElement.Source = new Uri(song.FullPath);
             PlayerMediaElement.Play();
@@ -760,6 +765,15 @@ namespace BallparkAudioDashboard
             {
                 lastMasterVolumeSliderValue = MasterVolumeSlider.Value;
                 MasterVolumeSlider.Value = 0;
+            }
+        }
+
+        private void StrikeoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            Song song = _audioFilesServices.GetStrikeoutSoundClip();
+            if (song != null)
+            {
+                PlayInPlayerMediaElement(song);
             }
         }
 

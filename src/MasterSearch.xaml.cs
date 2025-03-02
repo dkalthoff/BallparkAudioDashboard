@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace BallparkAudioDashboard
@@ -25,6 +26,18 @@ namespace BallparkAudioDashboard
             _allSongs = allSongs;
             _audioFilesServices = new AudioFilesServices();
             Owner = Application.Current.MainWindow;
+
+            this.PreviewKeyDown += new KeyEventHandler(MasterSearch_KeyEventHandler);
+        }
+
+        private void MasterSearch_KeyEventHandler(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Escape:
+                    Close();
+                    break;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -34,15 +47,7 @@ namespace BallparkAudioDashboard
 
         private void SearchTextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchTextBox.Text))
-            {
-                SearchResultListView.ItemsSource = null;
-            }
-            else
-            {
-                IEnumerable<Song> resultantSongs = _allSongs.Where(song => _audioFilesServices.isSongAMatch(song.Title, SearchTextBox.Text));
-                SearchResultListView.ItemsSource = new ObservableCollection<Song>(resultantSongs);
-            }
+            Search();
         }
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -53,9 +58,12 @@ namespace BallparkAudioDashboard
             }
         }
 
-        private void SongsSearchClearButton_Click(object sender, RoutedEventArgs e)
+        private void ClearSearch_Click(object sender, RoutedEventArgs e)
         {
-            SearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+            SearchTextBox.Text = null;
+            SearchTextBox.Focus();
+
+            SearchResultListView.ItemsSource = null;
         }
 
         private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -63,6 +71,19 @@ namespace BallparkAudioDashboard
             if (SearchTextBox.Text == string.Empty)
             {
                 SearchTextBox.Text = SONG_SEARCH_TEXTBOX_DEFAULT_TEXT;
+            }
+        }
+
+        private void Search()
+        {
+            if (string.IsNullOrEmpty(SearchTextBox.Text))
+            {
+                SearchResultListView.ItemsSource = null;
+            }
+            else
+            {
+                IEnumerable<Song> resultantSongs = _allSongs.Where(song => _audioFilesServices.IsSongAMatch(song.Title, SearchTextBox.Text));
+                SearchResultListView.ItemsSource = new ObservableCollection<Song>(resultantSongs);
             }
         }
 
@@ -84,8 +105,11 @@ namespace BallparkAudioDashboard
 
         private void SearchResultListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            _mainWindow.PlayInPlayerMediaElement(SearchResultListView);
-            this.DialogResult = false;
+            if (SearchResultListView.SelectedItem != null)
+            {
+                _mainWindow.PlayInPlayerMediaElement(SearchResultListView);
+                this.DialogResult = false;
+            }
         }
 
         #region Result Actions
@@ -104,13 +128,11 @@ namespace BallparkAudioDashboard
         private void LoadInOne_Click(object sender, RoutedEventArgs e)
         {
             _mainWindow.LoadInPlayerMediaElement(SearchResultListView);
-            this.DialogResult = false;
         }
 
         private void LoadInTwo_Click(object sender, RoutedEventArgs e)
         {
             _mainWindow.LoadInPlayerMediaElement2(SearchResultListView);
-            this.DialogResult = false;
         }
 
         private void AddToPlaylist_Click(object sender, RoutedEventArgs e)

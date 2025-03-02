@@ -5,12 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BallparkAudioDashboard"
         mc:Ignorable="d"
-        Title="Search" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+        Title="Search All Music" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
     <Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="20,20,20,20" FocusManager.FocusedElement="{Binding ElementName=SearchTextBox}">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <Label Content="Enter search term" HorizontalAlignment="Left" FontWeight="Bold" VerticalAlignment="Top" Height="24"/>
-                <TextBox x:Name="SearchTextBox" HorizontalAlignment="Center" Text="Search..." Width="500" Height="38" FontSize="22" FontWeight="Bold" FontFamily="Segoe UI Variable Display Semibold" KeyUp="SearchTextBox_KeyUp" GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox x:Name="SearchTextBox" HorizontalAlignment="Center" Text="Search..." Width="500" Height="38" FontSize="22" FontWeight="Bold" FontFamily="Segoe UI Variable Display Semibold" KeyUp="SearchTextBox_KeyUp" GotFocus="SearchTextBox_GotFocus" LostFocus="SearchTextBox_LostFocus"/>
+                    <Button Width="38" Height="38" Content="X" FontSize="26" Click="ClearSearch_Click" HorizontalAlignment="Right" VerticalAlignment="Top" ToolTip="Clear Search"></Button>
+                </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <Label Content="Double-click result to start playing or select actions to the right" HorizontalAlignment="Left" Margin="0,5,0,0" FontWeight="Bold" Height="26"/>
